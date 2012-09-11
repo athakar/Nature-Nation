@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout android:orientation="horizontal"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:weightSum="100">
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="match_parent"
+            android:layout_height="387dp"
+            android:paddingTop="5dp"
+            android:src="@drawable/ic_launcher" />
+    
+</LinearLayout>
+
+ <LinearLayout android:orientation="horizontal"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:weightSum="100">
+        
+    <TextView
+        android:id="@+id/Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="80dp"
+        android:layout_weight="50"
+        android:text="Share this picture?"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+    
+</LinearLayout>
+    
+    
+ <LinearLayout android:orientation="horizontal"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:weightSum="100">
+
+    <Button
+        android:id="@+id/identify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="49.60"
+        android:paddingLeft="5dp"
+        android:text="Yes"/>
+
+    <Button
+        android:id="@+id/No"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="47.71"
+        android:paddingRight="5dp"
+        android:text="No"/>
+
+    </LinearLayout>
+
+</LinearLayout>

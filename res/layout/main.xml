@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="100dp"
+        android:layout_weight="50"
+        android:text="APP NAME"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+<LinearLayout android:orientation="horizontal"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:weightSum="100" android:paddingTop="5dp">
+
+    <Button
+        android:id="@+id/photobutton"
+        android:layout_width="wrap_content"
+        android:layout_height="235dp"
+        android:layout_weight="50"
+        android:text="Take Photo" />
+
+    <Button
+        android:id="@+id/findingsbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="49.75"
+        android:text="My Findings " />
+
+</LinearLayout>
+
+<LinearLayout android:orientation="horizontal"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:weightSum="100">
+
+    <Button
+        android:id="@+id/mapbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="235dp"
+        android:layout_weight="53.18"
+        android:text="Map" />
+
+    <Button
+        android:id="@+id/settingsbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="46.82"
+        android:text="Settings" />
+
+</LinearLayout>
+</LinearLayout>
