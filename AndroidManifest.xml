@@ -22,6 +22,8 @@
         </activity>
         
         <activity android:name=".photoview" android:screenOrientation="portrait" android:theme="@android:style/Theme.NoTitleBar"/>
-    </application>
+        <activity android:name=".MyFindingsActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.NoTitleBar"/>
+        
+        </application>
 
 </manifest>
