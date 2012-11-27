@@ -1,16 +1,22 @@
 package serverbased.app;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.location.Location;
+import android.location.LocationManager;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -130,7 +136,16 @@ public class ServerAppActivity extends Activity
  
     	if(resultCode == RESULT_OK){
 
-    		SavePhotoTask s = new SavePhotoTask(attachmentCount++, ServerAppActivity.this);
+    		LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE); 
+
+    		Location location = (Location) lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+    		if(location == null)
+    		 location = (Location) lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+    		double longitude = location.getLongitude();
+    		double latitude = location.getLatitude();
+    		
+    		SavePhotoTask s = new SavePhotoTask(attachmentCount++, ServerAppActivity.this,latitude,longitude);
 			s.execute();
 			Toast.makeText(this, "Photo will be Uploaded to Server", Toast.LENGTH_SHORT).show();
     	}

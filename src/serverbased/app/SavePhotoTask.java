@@ -2,7 +2,7 @@ package serverbased.app;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.IOException;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -19,9 +19,14 @@ class SavePhotoTask extends AsyncTask<Void, Void, Void> {
 	private int attachmentCount;
 	boolean success = false;
 	private Context c;
-	public SavePhotoTask(int attachmentCount, Context c){
+	private double latitude,longitude;
+	
+	
+	public SavePhotoTask(int attachmentCount, Context c, double latitude, double longitude){
 		this.attachmentCount = attachmentCount;
 		this.c = c;
+		this.latitude = latitude;
+		this.longitude = longitude;
 	}
 
 	@Override
@@ -37,13 +42,12 @@ class SavePhotoTask extends AsyncTask<Void, Void, Void> {
 			f.setFileType(FTP.BINARY_FILE_TYPE);
 			f.changeWorkingDirectory("/AiDisk_a1/share/server/");
 			File file = new File(Environment.getExternalStorageDirectory() + "/ServerApp/Attachment " + attachmentCount + ".jpg");
+			
 			q = new FileInputStream(file);
 			f.storeFile("Attachment "+ attachmentCount + ".jpg", q);
-			ExifInterface exif = new ExifInterface(file.getAbsolutePath());     //Since API Level 5
-			String exifOrientation = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
-			Log.d("Orientation", exifOrientation);
 			f.logout();
 			success = true;
+			geoTag(file.getAbsolutePath());
 		} 
 		catch(Exception e) 
 		{
@@ -53,13 +57,48 @@ class SavePhotoTask extends AsyncTask<Void, Void, Void> {
 		return null;
 	}
 
+	public void geoTag(String filename){
+	ExifInterface exif;
+
+	try {
+	    exif = new ExifInterface(filename);
+	    int num1Lat = (int)Math.floor(latitude);
+	    int num2Lat = (int)Math.floor((latitude - num1Lat) * 60);
+	    double num3Lat = (latitude - ((double)num1Lat+((double)num2Lat/60))) * 3600000;
+
+	    int num1Lon = (int)Math.floor(longitude);
+	    int num2Lon = (int)Math.floor((longitude - num1Lon) * 60);
+	    double num3Lon = (longitude - ((double)num1Lon+((double)num2Lon/60))) * 3600000;
+
+	    exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, num1Lat+"/1,"+num2Lat+"/1,"+num3Lat+"/1000");
+	    exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, num1Lon+"/1,"+num2Lon+"/1,"+num3Lon+"/1000");
+
+
+	    if (latitude > 0) {
+	        exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, "N"); 
+	    } else {
+	        exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, "S");
+	    }
+
+	    if (longitude > 0) {
+	        exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, "E");    
+	    } else {
+	    exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, "W");
+	    }
+
+	    exif.saveAttributes();
+	} catch (IOException e) {
+	    Log.e("PictureActivity", e.getLocalizedMessage());
+	} 
+	
+	}
+	
 	@Override
 	protected void onPostExecute(Void result) {
 		// TODO Auto-generated method stub
 		super.onPostExecute(result);
 		if(success)
-			Toast.makeText(c, "Photo Successfully Uploaded", Toast.LENGTH_LONG).show();
-		
+			Toast.makeText(c, "Photo Successfully Uploaded ", Toast.LENGTH_LONG).show();
 	}
 	
 	
