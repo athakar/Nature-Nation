@@ -23,6 +23,7 @@
         
         <activity android:name=".photoview" android:screenOrientation="portrait" android:theme="@android:style/Theme.NoTitleBar"/>
         <activity android:name=".MyFindingsActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.NoTitleBar"/>
+        <activity android:name=".MyFindingActivityAlt" android:screenOrientation="portrait" android:theme="@android:style/Theme.NoTitleBar"/>
         
         </application>
 

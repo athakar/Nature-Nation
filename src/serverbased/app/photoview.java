@@ -43,7 +43,7 @@ public class photoview extends Activity
 		setContentView(R.layout.photoviewer);
 		Intent i = new Intent();
 		attachmentCount = getIntent().getIntExtra("count", 0);
-		String pathName = new File(Environment.getExternalStorageDirectory(),"/ServerApp/test"+ attachmentCount + ".jpg").toString();
+		String pathName = new File(Environment.getExternalStorageDirectory(),"/ServerApp/Attachment "+ attachmentCount + ".jpg").toString();
 	    photo = BitmapFactory.decodeFile(pathName);
 		setWidgets();
      
@@ -60,7 +60,7 @@ public class photoview extends Activity
     	{
 			public void onClick(View arg0) 
 			{
-				SavePhotoTask s = new SavePhotoTask(attachmentCount);
+				SavePhotoTask s = new SavePhotoTask(attachmentCount,photoview.this);
 				s.execute();
 			    finish();
 			}
@@ -76,12 +76,5 @@ public class photoview extends Activity
     	});
 	}
 
-	protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {  
-        if (requestCode == CAMERA_PIC_REQUEST)
-        {  
-
-        	
-        }  
-    }  
+ 
 }
