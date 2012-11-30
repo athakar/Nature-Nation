@@ -41,7 +41,7 @@ public class ServerAppActivity extends Activity
     public void onCreate(Bundle savedInstanceState) 
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.activity_main);
         
         getSavedData();
         
@@ -58,7 +58,7 @@ public class ServerAppActivity extends Activity
     public void setWidgets()
     {
     	
-    	photo = (Button) findViewById(R.id.photobutton);
+    	photo = (Button) findViewById(R.id.camera_button);
     	photo.setOnClickListener(new OnClickListener()
     	{
 
@@ -69,7 +69,7 @@ public class ServerAppActivity extends Activity
     		
     	});
     	
-    	map = (Button) findViewById(R.id.mapbutton);
+    	map = (Button) findViewById(R.id.map_button);
     	map.setOnClickListener(new OnClickListener(){
 
 			public void onClick(View arg0) {
@@ -79,7 +79,7 @@ public class ServerAppActivity extends Activity
     		
     	});
     	
-    	settings = (Button) findViewById(R.id.settingsbutton);
+    	settings = (Button) findViewById(R.id.navigate_button);
     	settings.setOnClickListener(new OnClickListener(){
 
 			public void onClick(View arg0) {
@@ -89,7 +89,7 @@ public class ServerAppActivity extends Activity
     		
     	});
     	
-    	findings = (Button) findViewById(R.id.findingsbutton);
+    	findings = (Button) findViewById(R.id.findings_button);
     	findings.setOnClickListener(new OnClickListener(){
 
 			public void onClick(View arg0) {
