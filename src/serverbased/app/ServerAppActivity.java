@@ -148,6 +148,7 @@ public class ServerAppActivity extends Activity
     		SavePhotoTask s = new SavePhotoTask(attachmentCount++, ServerAppActivity.this,latitude,longitude);
 			s.execute();
 			Toast.makeText(this, "Photo will be Uploaded to Server", Toast.LENGTH_SHORT).show();
+			
     	}
     }
 

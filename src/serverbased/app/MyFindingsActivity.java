@@ -62,22 +62,14 @@ private void setList(){
         File f = new File(Environment.getExternalStorageDirectory(),"/ServerApp/Attachment " + i + ".jpg");
 		
 		
-		BitmapFactory.Options options = new BitmapFactory.Options();
-	    options.inJustDecodeBounds = true;
-	    BitmapFactory.decodeFile( f.getAbsolutePath(), options );
-	        options.inJustDecodeBounds = false;
-	        options.inSampleSize = 32; 
 
-	        b = BitmapFactory.decodeFile( f.getAbsolutePath(), options );
-	        if ( b != null ) {
-	            b = Bitmap.createScaledBitmap( b, b.getWidth(), b.getHeight(), false );
-	        }
-		
 		
 		ImageView image = new ImageView(this);
 		image.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 		image.setScaleType(ImageView.ScaleType.FIT_CENTER);
-		image.setImageBitmap(b);
+		//image.setImageBitmap(b);
+		LoadCachedImageTask l = new LoadCachedImageTask(f.getAbsolutePath(),image);
+		l.execute();
 		icon.addView(image);
 		
 		listItem.addView(icon);

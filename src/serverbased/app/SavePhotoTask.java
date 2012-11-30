@@ -20,7 +20,7 @@ class SavePhotoTask extends AsyncTask<Void, Void, Void> {
 	boolean success = false;
 	private Context c;
 	private double latitude,longitude;
-	
+	private String l1,l2;
 	
 	public SavePhotoTask(int attachmentCount, Context c, double latitude, double longitude){
 		this.attachmentCount = attachmentCount;
@@ -70,9 +70,11 @@ class SavePhotoTask extends AsyncTask<Void, Void, Void> {
 	    int num2Lon = (int)Math.floor((longitude - num1Lon) * 60);
 	    double num3Lon = (longitude - ((double)num1Lon+((double)num2Lon/60))) * 3600000;
 
+	    
 	    exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, num1Lat+"/1,"+num2Lat+"/1,"+num3Lat+"/1000");
+	    l1 = num1Lat+"/1,"+num2Lat+"/1,"+num3Lat+"/1000";
 	    exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, num1Lon+"/1,"+num2Lon+"/1,"+num3Lon+"/1000");
-
+	    l2 = num1Lon+"/1,"+num2Lon+"/1,"+num3Lon+"/1000";
 
 	    if (latitude > 0) {
 	        exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, "N"); 
@@ -97,8 +99,16 @@ class SavePhotoTask extends AsyncTask<Void, Void, Void> {
 	protected void onPostExecute(Void result) {
 		// TODO Auto-generated method stub
 		super.onPostExecute(result);
-		if(success)
-			Toast.makeText(c, "Photo Successfully Uploaded ", Toast.LENGTH_LONG).show();
+		try{
+		DatabaseClass entry = new DatabaseClass(c);
+		entry.open();
+		entry.createEntry("Attachment " + attachmentCount,l1,l2);
+		entry.close();
+		}catch(Exception e){
+			Log.d("Database Tag", e.getMessage());
+			l1 = e.getMessage();
+		}
+		Toast.makeText(c, "Photo Successfully uploaded", Toast.LENGTH_LONG).show();
 	}
 	
 	
