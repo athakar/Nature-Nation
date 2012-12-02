@@ -20,10 +20,7 @@ import android.widget.LinearLayout.LayoutParams;
 
 public class MyFindingsActivity extends Activity {
 
-	private ArrayList<String> newsTitleList;
-	private String news_content;
 	private LinearLayout findingsList;
-	private String[] testImageUrls 	= new String [6];
 	private int attachmentCount;
 	
 
@@ -52,7 +49,7 @@ private void setList(){
 		listItem.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 		listItem.setOrientation(LinearLayout.HORIZONTAL);
 		listItem.setId(i);
-	//	listItem.setBackgroundResource(R.drawable.news_item_selector);
+	listItem.setBackgroundResource(android.R.drawable.list_selector_background);
 		
 		LayoutParams ip = new LayoutParams(85, 85);
 		ip.setMargins(margin, margin, margin, margin);
@@ -73,6 +70,15 @@ private void setList(){
 		icon.addView(image);
 		
 		listItem.addView(icon);
+		listItem.setOnClickListener(new View.OnClickListener() {
+
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				  v.setBackgroundResource(android.R.drawable.list_selector_background);
+	               
+			}         
+     
+        });
 		
 		TextView text = new TextView(this);
 		text.setText("Item " + i);

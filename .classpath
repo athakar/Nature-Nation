@@ -7,5 +7,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/commons-net-3.1-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-net-3.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-net-examples-3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/Raghav/Downloads/mysql-connector-java-3.0.17-ga-bin.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
