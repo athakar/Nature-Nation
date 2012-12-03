@@ -1,24 +1,17 @@
 package serverbased.app;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.location.Location;
 import android.location.LocationManager;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -27,9 +20,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
-import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -37,7 +31,10 @@ public class ServerAppActivity extends Activity
 {
     /** Called when the activity is first created. */
    
-   
+
+   private boolean newUser = true;
+   private AlertDialog joinGameDialog;
+   private String userName ="",password="";
     private ImageButton photo, findings, map, settings;
 	private int CAMERA_PIC_REQUEST = 1001;
 	private String PREFS_NAME = "My Prefs Folder";
@@ -51,8 +48,12 @@ public class ServerAppActivity extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+      
 
         getSavedData();
+        if(newUser){
+        	createJoinDialog();
+        }
         launchGeoTasks();
 
         setWidgets();           
@@ -124,9 +125,7 @@ public class ServerAppActivity extends Activity
 				Intent i = new Intent(ServerAppActivity.this,NavigationActivity.class);
 				i.putExtra("radiusData", naviData);
 				startActivity(i);
-/*	
-				Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + loc)); 
-				startActivity(i);*/
+
 				}
 			
     		
@@ -148,17 +147,11 @@ public class ServerAppActivity extends Activity
 
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				
-				if(attachmentCount <= 10){
-					Intent i = new Intent(ServerAppActivity.this, MyFindingActivityAlt.class);
-					i.putExtra("count", attachmentCount );
-					startActivity(i);
-				}
-				else{
+		
 				Intent i = new Intent(ServerAppActivity.this, MyFindingsActivity.class);
 				i.putExtra("count", attachmentCount );
 				startActivity(i);
-				}
+				
 			}
     		
     	});
@@ -175,6 +168,57 @@ public class ServerAppActivity extends Activity
     	});
     }
        
+    
+    
+    public void createJoinDialog() {
+		final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+		alertDialogBuilder.setMessage("New User");
+		alertDialogBuilder.setCancelable(false);
+		LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
+		final View layout = inflater.inflate(R.layout.join_game_dialog, (ViewGroup) findViewById(R.id.dialog_root));
+		alertDialogBuilder.setView(layout);
+		final EditText nameBox = (EditText) layout.findViewById(R.id.unameInput);
+		final EditText codeBox = (EditText) layout.findViewById(R.id.codeInput);
+		
+		alertDialogBuilder.setPositiveButton("Create Account", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						 userName = nameBox.getText().toString();
+						 password = codeBox.getText().toString();
+						DBConnector b = new DBConnector("128.211.216.171", "root", "developer");
+						boolean authenticate = b.addUser(userName, password);
+						if(authenticate){
+							Toast.makeText(ServerAppActivity.this, "User Added", Toast.LENGTH_LONG).show();
+							newUser = false;
+							saveData();
+					        
+						}
+						else
+							Toast.makeText(ServerAppActivity.this, "Please Try another username", Toast.LENGTH_LONG).show();
+
+						
+					}
+				});
+
+		 joinGameDialog = alertDialogBuilder.create();
+
+		joinGameDialog.show();
+		
+		joinGameDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+
+            public void onDismiss(DialogInterface dialog) {
+                //If the error flag was set to true then show the dialog again
+                if (newUser) {
+                	joinGameDialog.show();
+                } else {
+                    return;
+                }
+
+            }
+        });
+		
+	}
+    
+    
     private void launchGeoTasks(){
     	LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE); 
 
@@ -195,6 +239,8 @@ public class ServerAppActivity extends Activity
     	SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putFloat("attachmentCount", (float)attachmentCount);
+        editor.putBoolean("newUser", newUser);
+        editor.putString("userName",userName);
         editor.commit();
     }
     
@@ -202,6 +248,8 @@ public class ServerAppActivity extends Activity
     	SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
 		try{
 	       attachmentCount  =(int) settings.getFloat("attachmentCount", 0);
+	       newUser = settings.getBoolean("newUser", true);
+	       userName = settings.getString("userName", "");
 		}catch(Exception e){
 			Log.e("Preference", "error: " + e.getMessage());
 		}

@@ -1,6 +1,8 @@
 package serverbased.app;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -12,6 +14,7 @@ public class DBConnector {
 	private ResultSet rs;
 	private Statement stmt;
 	private String ip, user, pass;
+	private PreparedStatement pstmt;
 
 	public DBConnector(String ip, String username, String password) {
 		conn = null;
@@ -27,6 +30,50 @@ public class DBConnector {
 		conn = DriverManager.getConnection("jdbc:mysql://" + ip + "/test?user="+user+"&password="+pass);
 	}
 
+	public boolean getTurk(String username) {
+		try {
+			this.open();
+			
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery("SELECT * FROM users WHERE user='"+username+"'");
+			if(stmt.execute("SELECT * FROM users WHERE user='"+username+"'")) {
+				rs = stmt.getResultSet();
+			}
+
+			if(rs.isBeforeFirst())
+				if(rs.next())
+					if(rs.getInt("mturk")==0) {
+						return false;
+					}
+		} catch(Exception e) {}
+		return true;
+	}
+	
+	public boolean addUser(String username, String password) {
+		try {
+			this.open();
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery("SELECT * FROM users WHERE user='"+username+"'");
+			if(stmt.execute("SELECT * FROM users WHERE user='"+username+"'")) {
+				rs = stmt.getResultSet();
+			}
+
+			if(rs.isBeforeFirst())
+				if(rs.next())
+					if(rs.getString("user").equals(username)) {
+						return false;
+					}
+			pstmt = conn.prepareStatement("INSERT INTO users\nVALUES ('"+username+"', '"+password+"', 0)");
+			pstmt.executeUpdate();
+			this.close();
+		} catch(Exception e) {}
+		
+		return true;
+	}
+	
+	
+	
+	
 	public boolean login(String username, String password) {
 		try {
 			this.open();
@@ -81,6 +128,22 @@ public class DBConnector {
 
 		return e;
 	}
+	
+	public void addEntry(Entry e) {
+		addEntry(e.id, e.latitude, e.longitude, e.username, e.animal);
+	}
+	
+	public void addEntry(int id, String lat, String longi, String user, String animal) {
+		String values = "'"+id+"', '"+longi+"', '"+lat+"', '"+user+"', '"+animal+"'";
+		
+		try {
+			this.open();
+			pstmt = conn.prepareStatement("INSERT INTO data\nVALUES ("+values+")");
+			pstmt.executeUpdate();
+			
+		} catch(Exception e) {
+		}
+	}
 
 	public ArrayList<Entry> getAllEntries() {
 		ArrayList<Entry> list = new ArrayList<Entry>();
@@ -118,24 +181,4 @@ public class DBConnector {
 		if(conn!=null) conn.close();
 	}
 
-	public static void main(String[] args) {
-		//Entry entry;
-		//Scanner input = new Scanner(System.in);
-		DBConnector connection = new DBConnector("pal-nat184-061-116.itap.purdue.edu", "root", "developer");
-		ArrayList<Entry> list = new ArrayList<Entry>();
-		//String pass = input.nextLine();
-		try {
-			list = connection.getAllEntries();
-			//entry = connection.lookupById(2);
-			for(Entry e: list) {
-				System.out.print("Id: "+e.id);
-				System.out.print("\tUsername: "+e.username);
-				System.out.print("\tAnimal: "+e.animal);
-				System.out.println("\t Lat+Long: "+e.latitude+" "+e.longitude);
-			}
-			connection.close();
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
 }
