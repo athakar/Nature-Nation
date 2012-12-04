@@ -21,17 +21,23 @@ class SavePhotoTask extends AsyncTask<Void, Void, Void> {
 	private Context c;
 	private double latitude,longitude;
 	private String l1,l2;
+	private String name = "";
+	private String username = "";
 	
-	public SavePhotoTask(int attachmentCount, Context c, double latitude, double longitude){
+	public SavePhotoTask(int attachmentCount, Context c, double latitude, double longitude, String username){
 		this.attachmentCount = attachmentCount;
 		this.c = c;
 		this.latitude = latitude;
 		this.longitude = longitude;
+		this.username = username;
 	}
 
 	@Override
 	protected Void doInBackground(Void... params) {
 		// TODO Auto-generated method stub
+		
+		
+		
 		
 		FTPClient f = new FTPClient();
 		FileInputStream q = null;
@@ -40,20 +46,32 @@ class SavePhotoTask extends AsyncTask<Void, Void, Void> {
 			f.connect("cheese.asuscomm.com");       //works when on an actual phone. not the emulator
 			f.login("anonymous", "");
 			f.setFileType(FTP.BINARY_FILE_TYPE);
-			f.changeWorkingDirectory("/AiDisk_a1/share/server/");
+			
+			if(! f.changeWorkingDirectory("/AiDisk_a1/share/server/" +username)){
+				f.makeDirectory("/AiDisk_a1/share/server/" +username);
+			}
+			
 			File file = new File(Environment.getExternalStorageDirectory() + "/ServerApp/Attachment " + attachmentCount + ".jpg");
 			
 			q = new FileInputStream(file);
 			f.storeFile("Attachment "+ attachmentCount + ".jpg", q);
 			f.logout();
 			success = true;
-			geoTag(file.getAbsolutePath());
+			//geoTag(file.getAbsolutePath());
 		} 
 		catch(Exception e) 
 		{
 			Log.e("Error","error : " + e.getMessage() );
 			e.printStackTrace();
 		}		
+		
+		TurkRequester t = new TurkRequester();
+		try{
+		name = t.executeRequest("ftp://cheese.asuscomm.com/AiDisk_a1/share/server/Attachment " + attachmentCount + ".jpg");
+		}catch(Exception e){
+			name = "";
+		}
+		
 		return null;
 	}
 
@@ -99,16 +117,32 @@ class SavePhotoTask extends AsyncTask<Void, Void, Void> {
 	protected void onPostExecute(Void result) {
 		// TODO Auto-generated method stub
 		super.onPostExecute(result);
+		
+		String n = name.toLowerCase();
+		
+		if(n.contains("no animal") || name.equals(""))
+			Toast.makeText(c,"Sorry we could not upload your photo", Toast.LENGTH_LONG).show();
+
+		
+		else{
 		try{
+		DBConnector db = new DBConnector("128.211.216.171", "root", "developer");	
+		
+			
 		DatabaseClass entry = new DatabaseClass(c);
 		entry.open();
-		entry.createEntry("Attachment " + attachmentCount,l1,l2);
+		String lat = latitude + "";
+		String lng = longitude +"";
+		db.addEntry(lat, lng, username, name);
+		
+		entry.createEntry(name,lat,lng);
 		entry.close();
 		}catch(Exception e){
 			Log.d("Database Tag", e.getMessage());
 			l1 = e.getMessage();
 		}
-		Toast.makeText(c, "Photo Successfully uploaded", Toast.LENGTH_LONG).show();
+		Toast.makeText(c,name +  " Photo Successfully uploaded" + name, Toast.LENGTH_LONG).show();
+		}
 	}
 	
 	

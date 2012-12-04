@@ -130,11 +130,11 @@ public class DBConnector {
 	}
 	
 	public void addEntry(Entry e) {
-		addEntry(e.id, e.latitude, e.longitude, e.username, e.animal);
+		addEntry(e.latitude, e.longitude, e.username, e.animal);
 	}
 	
-	public void addEntry(int id, String lat, String longi, String user, String animal) {
-		String values = "'"+id+"', '"+longi+"', '"+lat+"', '"+user+"', '"+animal+"'";
+	public void addEntry(String lat, String longi, String user, String animal) {
+		String values = longi+"', '"+lat+"', '"+user+"', '"+animal+"'";
 		
 		try {
 			this.open();

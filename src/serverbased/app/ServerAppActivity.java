@@ -34,11 +34,15 @@ public class ServerAppActivity extends Activity
 
    private boolean newUser = true;
    private AlertDialog joinGameDialog;
-   private String userName ="",password="";
-    private ImageButton photo, findings, map, settings;
+   private String userName ="";
+   
+    private ImageButton photo, findings, map, navigate;
 	private int CAMERA_PIC_REQUEST = 1001;
-	private String PREFS_NAME = "My Prefs Folder";
+	private String PREFS_NAME = "Nature Nation Prefs Folder";
+	
+
 	private int attachmentCount =0;
+	
 	ArrayList<Entry> radiusData = new ArrayList<Entry>();
 	ArrayList<Navigation> naviData = new ArrayList<Navigation>();
 	LoadGeoDataTask l;
@@ -116,8 +120,8 @@ public class ServerAppActivity extends Activity
     	
     	
     	
-    	settings = (ImageButton) findViewById(R.id.navigate_button);
-    	settings.setOnClickListener(new OnClickListener(){
+    	navigate = (ImageButton) findViewById(R.id.navigate_button);
+    	navigate.setOnClickListener(new OnClickListener(){
 
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
@@ -130,13 +134,13 @@ public class ServerAppActivity extends Activity
 			
     		
     	});
-    	settings.setOnTouchListener(new OnTouchListener() {
+    	navigate.setOnTouchListener(new OnTouchListener() {
 			public boolean onTouch(View arg0, MotionEvent me) {
 				// TODO Auto-generated method stub
 	   			if (me.getAction() == MotionEvent.ACTION_DOWN) {
-    				settings.setColorFilter(Color.argb(150, 155, 155, 155));
+    				navigate.setColorFilter(Color.argb(150, 155, 155, 155));
     			} else if (me.getAction() == MotionEvent.ACTION_UP) {
-    				settings.setColorFilter(Color.argb(0, 155, 155, 155)); // or null	
+    				navigate.setColorFilter(Color.argb(0, 155, 155, 155)); // or null	
     			}	
 				return false;
 			}
@@ -183,7 +187,7 @@ public class ServerAppActivity extends Activity
 		alertDialogBuilder.setPositiveButton("Create Account", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						 userName = nameBox.getText().toString();
-						 password = codeBox.getText().toString();
+						String password = codeBox.getText().toString();
 						DBConnector b = new DBConnector("128.211.216.171", "root", "developer");
 						boolean authenticate = b.addUser(userName, password);
 						if(authenticate){
@@ -237,7 +241,7 @@ public class ServerAppActivity extends Activity
     
     private void saveData(){
     	SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        SharedPreferences.Editor editor = settings.edit();
+      SharedPreferences.Editor editor = settings.edit();
         editor.putFloat("attachmentCount", (float)attachmentCount);
         editor.putBoolean("newUser", newUser);
         editor.putString("userName",userName);
@@ -281,7 +285,7 @@ public class ServerAppActivity extends Activity
     		double longitude = location.getLongitude();
     		double latitude = location.getLatitude();
     		
-    		SavePhotoTask s = new SavePhotoTask(attachmentCount++, ServerAppActivity.this,latitude,longitude);
+    		SavePhotoTask s = new SavePhotoTask(attachmentCount++, ServerAppActivity.this,latitude,longitude,userName);
 			s.execute();
 			Toast.makeText(this, "Photo will be Uploaded to Server", Toast.LENGTH_SHORT).show();
 			
