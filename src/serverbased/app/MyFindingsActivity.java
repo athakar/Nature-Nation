@@ -22,6 +22,7 @@ public class MyFindingsActivity extends Activity {
 
 	private LinearLayout findingsList;
 	private int attachmentCount;
+	private ArrayList<SQLiteDBEntry> list ;
 	
 
 	@Override
@@ -30,6 +31,11 @@ public class MyFindingsActivity extends Activity {
 		setContentView(R.layout.findingsviewer);
 		Bundle extras = getIntent().getExtras();
 		attachmentCount = extras.getInt("count");
+		
+		 DatabaseClass b = new DatabaseClass(this);
+		 b.open();
+		list = b.getData();
+		b.close();
 		initMembers();
 		setList();
 		
@@ -44,7 +50,7 @@ public class MyFindingsActivity extends Activity {
 private void setList(){
 	int margin = 4;
 	Bitmap b;
-    for(int i=0;i<attachmentCount;i++){
+    for(int i=list.size()-1 ;i >=0 ;i--){
     	LinearLayout listItem = new LinearLayout(this);
 		listItem.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 		listItem.setOrientation(LinearLayout.HORIZONTAL);
@@ -56,7 +62,7 @@ private void setList(){
 		RelativeLayout icon = new RelativeLayout(this);
 		icon.setLayoutParams(ip);
 			
-        File f = new File(Environment.getExternalStorageDirectory(),"/ServerApp/Attachment " + i + ".jpg");
+        File f = new File(Environment.getExternalStorageDirectory(),"/ServerApp/Attachment " + list.get(i).count + ".jpg");
 		
 		
 
@@ -81,7 +87,7 @@ private void setList(){
         });
 		
 		TextView text = new TextView(this);
-		text.setText("Item " + i);
+		text.setText(list.get(i).name);
 		text.setTextColor(Color.LTGRAY);
 		text.setTypeface(null, Typeface.BOLD);
 		LayoutParams tp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);

@@ -42,6 +42,7 @@ public class GeoDistance {
 		DBConnector db = new DBConnector("128.211.216.171", "root", "developer");
 		ArrayList<Entry> data = null;
 		ArrayList<Entry> result = new ArrayList<Entry>();
+		int entries = 0;
 		try{
 		 data = db.getAllEntries();
 		 db.close();
@@ -51,8 +52,9 @@ public class GeoDistance {
 		for(Entry e: data){
 			double lat = Double.parseDouble(e.latitude);
 			double lon = Double.parseDouble(e.longitude);
-			if(getDistance(lat,lon,latitude,longitude) < 20)
-				result.add(e);
+			if(entries <  12 && getDistance(lat,lon,latitude,longitude) < 20){
+				result.add(e);entries++;
+			}
 		}
 		
 		

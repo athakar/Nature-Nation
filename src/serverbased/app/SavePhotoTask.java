@@ -21,7 +21,7 @@ class SavePhotoTask extends AsyncTask<Void, Void, Void> {
 	private Context c;
 	private double latitude,longitude;
 	private String l1,l2;
-	private String name = "";
+	private String name = "Animal1";
 	private String username = "";
 	
 	public SavePhotoTask(int attachmentCount, Context c, double latitude, double longitude, String username){
@@ -47,9 +47,12 @@ class SavePhotoTask extends AsyncTask<Void, Void, Void> {
 			f.login("anonymous", "");
 			f.setFileType(FTP.BINARY_FILE_TYPE);
 			
-			if(! f.changeWorkingDirectory("/AiDisk_a1/share/server/" +username)){
-				f.makeDirectory("/AiDisk_a1/share/server/" +username);
-			}
+			 f.changeWorkingDirectory("/AiDisk_a1/share/server/");
+			 
+			 f.makeDirectory(username);
+			 
+			 f.changeWorkingDirectory("/AiDisk_a1/share/server/" + username +"/");
+			
 			
 			File file = new File(Environment.getExternalStorageDirectory() + "/ServerApp/Attachment " + attachmentCount + ".jpg");
 			
@@ -67,9 +70,9 @@ class SavePhotoTask extends AsyncTask<Void, Void, Void> {
 		
 		TurkRequester t = new TurkRequester();
 		try{
-		name = t.executeRequest("ftp://cheese.asuscomm.com/AiDisk_a1/share/server/Attachment " + attachmentCount + ".jpg");
+		name = t.executeRequest("ftp://cheese.asuscomm.com/AiDisk_a1/share/server/" + username + "/Attachment " + attachmentCount + ".jpg");
 		}catch(Exception e){
-			name = "";
+			name = "no animal";
 		}
 		
 		return null;
@@ -118,9 +121,9 @@ class SavePhotoTask extends AsyncTask<Void, Void, Void> {
 		// TODO Auto-generated method stub
 		super.onPostExecute(result);
 		
-		String n = name.toLowerCase();
+		//String n = name.toLowerCase();
 		
-		if(n.contains("no animal") || name.equals(""))
+		if(name.contains("no animal") || name.equals(""))
 			Toast.makeText(c,"Sorry we could not upload your photo", Toast.LENGTH_LONG).show();
 
 		
@@ -132,16 +135,16 @@ class SavePhotoTask extends AsyncTask<Void, Void, Void> {
 		DatabaseClass entry = new DatabaseClass(c);
 		entry.open();
 		String lat = latitude + "";
-		String lng = longitude +"";
+		String lng = longitude + "";
 		db.addEntry(lat, lng, username, name);
 		
-		entry.createEntry(name,lat,lng);
+		entry.createEntry(name,attachmentCount,lat,lng);
 		entry.close();
 		}catch(Exception e){
 			Log.d("Database Tag", e.getMessage());
 			l1 = e.getMessage();
 		}
-		Toast.makeText(c,name +  " Photo Successfully uploaded" + name, Toast.LENGTH_LONG).show();
+		Toast.makeText(c,name +  " Photo Successfully uploaded", Toast.LENGTH_LONG).show();
 		}
 	}
 	

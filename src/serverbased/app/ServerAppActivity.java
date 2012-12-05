@@ -32,6 +32,7 @@ public class ServerAppActivity extends Activity
     /** Called when the activity is first created. */
    
 
+	
    private boolean newUser = true;
    private AlertDialog joinGameDialog;
    private String userName ="";
@@ -52,9 +53,14 @@ public class ServerAppActivity extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-      
-
+        
+        DatabaseClass c = new DatabaseClass(this);
+        c.open();
+        c.delete();
+        
+        
         getSavedData();
+        
         if(newUser){
         	createJoinDialog();
         }
@@ -224,9 +230,10 @@ public class ServerAppActivity extends Activity
     
     
     private void launchGeoTasks(){
+    	
     	LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE); 
-
 		Location location = (Location) lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+	
 		if(location == null)
 		 location = (Location) lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
@@ -287,6 +294,7 @@ public class ServerAppActivity extends Activity
     		
     		SavePhotoTask s = new SavePhotoTask(attachmentCount++, ServerAppActivity.this,latitude,longitude,userName);
 			s.execute();
+			saveData();
 			Toast.makeText(this, "Photo will be Uploaded to Server", Toast.LENGTH_SHORT).show();
 			
     	}

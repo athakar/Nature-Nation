@@ -134,14 +134,15 @@ public class DBConnector {
 	}
 	
 	public void addEntry(String lat, String longi, String user, String animal) {
-		String values = longi+"', '"+lat+"', '"+user+"', '"+animal+"'";
+		String values = "'"+longi+"', '"+lat+"', '"+user+"', '"+animal+"'";
 		
 		try {
 			this.open();
-			pstmt = conn.prepareStatement("INSERT INTO data\nVALUES ("+values+")");
+			pstmt = conn.prepareStatement("INSERT INTO data (longitude, latitude, username, animalname)\nVALUES ("+values+")");
 			pstmt.executeUpdate();
 			
 		} catch(Exception e) {
+			e.printStackTrace();
 		}
 	}
 

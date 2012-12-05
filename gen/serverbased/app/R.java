@@ -21,6 +21,7 @@ public final class R {
         public static final int mainbg=0x7f020007;
         public static final int map=0x7f020008;
         public static final int nav=0x7f020009;
+        public static final int redpin=0x7f02000a;
     }
     public static final class id {
         public static final int No=0x7f05001b;
